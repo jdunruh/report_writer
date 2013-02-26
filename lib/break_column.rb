@@ -1,5 +1,5 @@
 class BreakColumn
-  def new(col, rest)
+  def initialize(col, rest)
     @break_column = col
     @break_header = rest[:break_header] ? rest[:break_header] : blank_header_footer
     @break_footer = rest[:break_footer] ? rest[:break_footer] : blank_header_footer

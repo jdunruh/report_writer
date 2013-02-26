@@ -1,0 +1,12 @@
+require 'prawn'
+require 'prawn/core'
+
+
+rp = RowProcessor.new
+rp.add_break_column('Service')
+Prawn::Document.generate("implicit.pdf") do
+  number_pages "<page>",  :align => :center,  :start_count_at => 5
+  CSV.foreach("CSV File", :header => true) do |row|
+     rp.process_row(row)
+  end
+end
