@@ -1,12 +1,30 @@
 require 'prawn'
-require 'prawn/core'
+require 'prawn/measurement_extensions'
 
 
 rp = RowProcessor.new
 rp.add_break_column('Service')
-Prawn::Document.generate("implicit.pdf") do
-  number_pages "<page>",  :align => :center,  :start_count_at => 5
-  CSV.foreach("CSV File", :header => true) do |row|
-     rp.process_row(row)
-  end
-end
+
+Prawn::Document.generate("implicit.pdf", :page_size   => [ 5.5.send(:in), 8.5.send(:in) ]) do
+repeat(:all, :dynamic => true) do
+	# header
+		bounding_box([bounds.left, bounds.top], :width  => bounds.width) do
+			font "Helvetica"
+      table :cell_style => {:borders => []}, :width => bounds.width, :header => true do
+        table [["Spanish Version", "English Version"]], :cell_style => {:borders => []}, :width => bounds.width do |t|
+          t.column(0).style(:align => :left, :padding => [5,5,5,0])
+          t.column(1).style(:align => :right, :padding => [5,0,5,5])
+        end
+        table :width => bounds.width do
+          table :cell_style => {:borders => []}, :width => bounds.width do
+
+          end
+        end
+      end
+		end
+	end
+	bounding_box([bounds.left, bounds.top - 50], :width  => bounds.width, :height => bounds.height - 100) do
+		text "Hello World"
+	end
+	end
+
