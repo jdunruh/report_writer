@@ -7,7 +7,7 @@ Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf") do
   orc = rc = nil
   first = true
   rc_table_header = [[]]
-  rc_table_body = [[]]
+  rc_table_body = []
   i = 0 # counter to track row for table body
   CSV.foreach("/Users/jdunruh/Desktop/resource_directory.csv", :headers => true) do |row|
     rc = row["Resource Category"]
@@ -28,7 +28,7 @@ Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf") do
 #                        [{:content => row["Specialty / Comments"], :colspan => 2}, {:content => row["Phone 1"], :colspan => 2}],
 #                        [row["Address"], row["City"], row["State"], row["Zip(5)"]]] # append next detail row
       puts rc_table_body
-      rc_table_body[i][0] = [[row["Resource Name"], "", "", row["Phone 1"]],
+      rc_table_body << [[row["Resource Name"], "", "", row["Phone 1"]],
                         [row["Specialty / Comments"],"","", row["Phone 2"]],
                         [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]] # append next detail row
       i = i + 1
