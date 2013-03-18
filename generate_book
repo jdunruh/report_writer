@@ -1,30 +1,41 @@
 require 'prawn'
 require 'prawn/measurement_extensions'
+require 'CSV'
 
-
-rp = RowProcessor.new
-rp.add_break_column('Service')
-
-Prawn::Document.generate("implicit.pdf", :page_size   => [ 5.5.send(:in), 8.5.send(:in) ]) do
-repeat(:all, :dynamic => true) do
-	# header
-		bounding_box([bounds.left, bounds.top], :width  => bounds.width) do
-			font "Helvetica"
-      table :cell_style => {:borders => []}, :width => bounds.width, :header => true do
-        table [["Spanish Version", "English Version"]], :cell_style => {:borders => []}, :width => bounds.width do |t|
-          t.column(0).style(:align => :left, :padding => [5,5,5,0])
-          t.column(1).style(:align => :right, :padding => [5,0,5,5])
+     # , :page_size => [5.5.send(:in), 8.5.send(:in)]
+Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf") do
+  orc = rc = nil
+  first = true
+  rc_table_header = []
+  rc_table_body = []
+  CSV.foreach("/Users/jdunruh/Desktop/resource_directory.csv", :headers => true) do |row|
+    rc = row["Resource Category"]
+    if rc != nil  # have an actual category, not a "header" line for human use only
+      if rc != orc # have a column break
+        if first
+          first = false
+        else
+          rc_table = [rc_table_header, rc_table_body]
+          table rc_table, :header => true
         end
-        table :width => bounds.width do
-          table :cell_style => {:borders => []}, :width => bounds.width do
-
-          end
-        end
+        rc_table_header = [row["Resource Category"], row["Spanish"]] # Create table header for category
+        rc_table_body = [] # empty body for new category
       end
-		end
-	end
-	bounding_box([bounds.left, bounds.top - 50], :width  => bounds.width, :height => bounds.height - 100) do
-		text "Hello World"
-	end
-	end
+      row = row.map {[f| f + f}
+#      rc_table_body << [[{:content => row["Resource Name"], :colspan => 2}, {:content => row["Phone1"], :colspan => 2}],
+#                        [{:content => row["Specialty / Comments"], :colspan => 2}, {:content => row["Phone 1"], :colspan => 2}],
+#                        [row["Address"], row["City"], row["State"], row["Zip(5)"]]] # append next detail row
+      rc_table_body << [[row["Resource Name"], "", "", row["Phone 1"]],
+                        [row["Specialty / Comments"],"","", row["Phone 2"]}],
+                        [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]] # append next detail row
+
+      orc = rc # save the resource category so we can see if it changes on the next row
+
+    end
+  end
+end
+
+def denil(field) #return empty string for nil fields
+  field.nil? ? "":field
+end
 
