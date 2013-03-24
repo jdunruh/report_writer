@@ -2,8 +2,14 @@ require 'prawn'
 require 'prawn/measurement_extensions'
 require 'CSV'
 
-     # , :page_size => [5.5.send(:in), 8.5.send(:in)]
-Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf") do
+def denil!(row) #return empty string for nil fields
+  row.each do |k,v|
+    row[k] = "" if v.nil?
+    end
+end
+
+
+Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf" , :page_size => [5.5.send(:in), 8.5.send(:in)]) do
   orc = rc = nil
   first = true
   rc_table_header = [[]]
@@ -16,21 +22,23 @@ Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf") do
         if first
           first = false
         else
-          rc_table = [[rc_table_header], [rc_table_body]]
-          table rc_table, :header => true
+          rc_table = [[rc_table_header], rc_table_body]
+          table rc_table_body, :header => true
+
         end
-        rc_table_header = [row["Resource Category"], row["Spanish"]] # Create table header for category
-        rc_table_body = [[]] # empty 2D array body for new category
+        rc_table_header = [[[row["Resource Category"]], [row["Spanish"]]]] # Create table header for category
+        rc_table_body = [] # empty array body for new category
+        rc_table_body << rc_table_header
         i = 0 # reset row count for new category
       end
+      denil!(row)
 #      row = row.map {[f| f + f}
 #      rc_table_body << [[{:content => row["Resource Name"], :colspan => 2}, {:content => row["Phone1"], :colspan => 2}],
 #                        [{:content => row["Specialty / Comments"], :colspan => 2}, {:content => row["Phone 1"], :colspan => 2}],
 #                        [row["Address"], row["City"], row["State"], row["Zip(5)"]]] # append next detail row
-      puts rc_table_body
-      rc_table_body << [[row["Resource Name"], "", "", row["Phone 1"]],
+      rc_table_body << [[[row["Resource Name"], "", "", row["Phone 1"]],
                         [row["Specialty / Comments"],"","", row["Phone 2"]],
-                        [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]] # append next detail row
+                        [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]]] # append next detail row
       i = i + 1
 
       orc = rc # save the resource category so we can see if it changes on the next row
@@ -39,7 +47,4 @@ Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf") do
   end
 end
 
-def denil(field) #return empty string for nil fields
-  field.nil? ? "":field
-end
 
