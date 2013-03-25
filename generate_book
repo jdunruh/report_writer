@@ -29,17 +29,14 @@ Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf" , :page_size => [
         rc_table_header = [[[row["Resource Category"]], [row["Spanish"]]]] # Create table header for category
         rc_table_body = [] # empty array body for new category
         rc_table_body << rc_table_header
-        i = 0 # reset row count for new category
       end
       denil!(row)
-#      row = row.map {[f| f + f}
-#      rc_table_body << [[{:content => row["Resource Name"], :colspan => 2}, {:content => row["Phone1"], :colspan => 2}],
-#                        [{:content => row["Specialty / Comments"], :colspan => 2}, {:content => row["Phone 1"], :colspan => 2}],
-#                        [row["Address"], row["City"], row["State"], row["Zip(5)"]]] # append next detail row
+#      rc_table_body << make_table([[[{:content => row["Resource Name"], :colspan => 2}, {:content => row["Phone1"], :colspan => 2}],
+#                        [{:content => row["Specialty / Comments"], :colspan => 2}, {:content => row["Phone 2"], :colspan => 2}],
+#                        [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]]]) # append next detail row
       rc_table_body << [[[row["Resource Name"], "", "", row["Phone 1"]],
                         [row["Specialty / Comments"],"","", row["Phone 2"]],
                         [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]]] # append next detail row
-      i = i + 1
 
       orc = rc # save the resource category so we can see if it changes on the next row
 
