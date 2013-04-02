@@ -36,7 +36,11 @@ Prawn::Document.generate("/Users/jdunruh/Desktop/implicit.pdf" , :page_size => [
 #                        [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]]]) # append next detail row
       rc_table_body << [make_table([[row["Resource Name"], "",  "", row["Phone 1"]],
                         [row["Specialty / Comments"],"","", row["Phone 2"]],
-                        [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]])] # append next detail row
+                        [row["Address"], row["City"], row["State"], row["Zip Code(5)"]]]) do
+                           row(0).borders = [:left, :top, :right]
+                           row(1).borders = [:left, :right]
+                           row(2).borders = [:left, :bottom, :right]
+                        end ] # append next detail row
 
       orc = rc # save the resource category so we can see if it changes on the next row
 
